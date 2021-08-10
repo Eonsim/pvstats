@@ -26,7 +26,7 @@ _logger = logging.getLogger(__name__)
 
 class PVInverter_Fronius(BasePVInverter):
   def __init__(self, cfg, **kwargs):
-    self.url = "http://{}:{}/solar_api/v1/GetInverterRealtimeData.cgi?Scope=Device&DeviceID=1&DataCollection=CommonInverterData".format(cfg["host"],cfg["port"])
+    self.url = "http://{}:{}/solar_api/v1/GetInverterRealtimeData.cgi?Scope=System&DeviceID=1&DataCollection=CommonInverterData".format(cfg["host"],cfg["port"])
 
   def connect(self):
     pass
@@ -111,11 +111,12 @@ class PVInverter_Fronius(BasePVInverter):
     print d
 
     self.registers = {'timestamp':     datetime.strptime(data['Head']['Timestamp'][:-6], "%Y-%m-%dT%H:%M:%S"),
-                      'daily_pv_power':Decimal(data['Body']['Data']['DAY_ENERGY']['Value']),
-                      'total_pv_power':Decimal(data['Body']['Data']['PAC']['Value']),
+                      'daily_pv_power':Decimal(data['Body']['Data']['DAY_ENERGY']['Values']['1']),
+                      'total_pv_power':Decimal(data['Body']['Data']['PAC']['Values']['1']),
                       #'internal_temp': Decimal(data['Body']['Data']['T_AMBIENT']['Value']).quantize(Decimal('.1')),
                       'internal_temp': Decimal(0),
-                      'pv1_voltage':   Decimal(data['Body']['Data']['UDC']['Value']),
+                      #'pv1_voltage':   Decimal(data['Body']['Data']['UDC']['Value']),
+                      'pv1_voltage':   Decimal('0'),
                       'pv2_voltage':   Decimal('0')}
 
     print self.registers
